@@ -1,10 +1,22 @@
 const express = require("express");
 const fetch = require("node-fetch");
-const cors = require("cors");
 const app = express();
 
-app.use(cors());
+// =================== THE CORS FIX ===================
+// This middleware will run on every request. It explicitly adds the
+// headers that Chrome needs to see before it will allow your extension
+// to get a response from the server. This directly solves the error.
+app.use((req, res, next) => {
+  // This header allows any origin to access the server. '*' is a wildcard.
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // This is for more complex requests, but it's good practice to have.
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+// ====================================================
 
+// These are your secret keys, loaded from Render's environment
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID;
 const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
 
